@@ -8,6 +8,7 @@ using DotNetWbapi.Dtos;
 
 namespace DotNetWbapi.Controllers
 {
+        // Declare the API controller with route prefix "api/declaration-settings"
     [ApiController]
     [Route("api/declaration-settings")]
     public class DeclarationSettingController : ControllerBase
@@ -23,6 +24,9 @@ namespace DotNetWbapi.Controllers
             _logger = logger;
         }
 
+        // GET: api/declaration-settings
+        // Retrieves all declaration settings
+
         [HttpGet]
         public async Task<IActionResult> GetDeclarationSettings()
         {
@@ -30,6 +34,10 @@ namespace DotNetWbapi.Controllers
             var settings = await _declarationSettingService.GetAllDeclarationSettingsAsync();
             return Ok(settings);
         }
+
+        //
+        // GET: api/declaration-settings/{id}
+        // Retrieves a specific declaration setting by ID
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDeclarationSetting(Guid id)
@@ -45,6 +53,9 @@ namespace DotNetWbapi.Controllers
             return Ok(setting);
         }
 
+
+        // POST: api/declaration-settings
+        // Creates a new declaration setting
         [HttpPost]
         public async Task<IActionResult> CreateDeclarationSetting([FromBody] CreateDeclarationSettingDto dto)
         {
@@ -61,6 +72,9 @@ namespace DotNetWbapi.Controllers
             }
         }
 
+
+        // PUT: api/declaration-settings/{id}
+        // Updates an existing declaration setting
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDeclarationSetting(Guid id, [FromBody] UpdateDeclarationSettingDto dto)
         {
@@ -83,6 +97,9 @@ namespace DotNetWbapi.Controllers
             }
         }
 
+
+        // DELETE: api/declaration-settings/{id}
+        // Deletes a declaration setting by its ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDeclarationSetting(Guid id)
         {

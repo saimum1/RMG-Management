@@ -9,6 +9,8 @@ using DotNetWbapi.Dtos;
 
 namespace DotNetWbapi.Controllers
 {
+
+    // declare the API controller with route prefix "api/template"
     [ApiController]
     [Route("api/template")]
     public class TemplateController : ControllerBase
@@ -25,6 +27,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // GET: api/template
+        // Fetches all templates
         [HttpGet]
         public async Task<IActionResult> GetTemplates()
         {
@@ -42,6 +45,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // GET: api/template/{id}
+        // Fetches a specific template by ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTemplate(Guid id)
         {
@@ -49,7 +53,7 @@ namespace DotNetWbapi.Controllers
             {
                 _logger.LogInformation("Fetching template with ID: {Id}", id);
                 var template = await _templateService.GetTemplateByIdAsync(id);
-                
+
                 if (template == null)
                 {
                     _logger.LogWarning("Template with ID: {Id} not found", id);
@@ -66,6 +70,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // POST: api/template
+        // Creates a new template
         [HttpPost]
         public async Task<IActionResult> CreateTemplate([FromForm] CreateTemplateDto dto)
         {
@@ -79,10 +84,10 @@ namespace DotNetWbapi.Controllers
 
                 _logger.LogInformation("Creating template: {Name}", dto.Name);
                 var newTemplate = await _templateService.CreateTemplateAsync(dto);
-                
+
                 return CreatedAtAction(
-                    nameof(GetTemplate), 
-                    new { id = newTemplate.Id }, 
+                    nameof(GetTemplate),
+                    new { id = newTemplate.Id },
                     new { success = true, data = newTemplate });
             }
             catch (Exception ex)
@@ -93,6 +98,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // GET: api/template/{id}/download
+        // Fetches a specific template by ID
         [HttpGet("{id}/download")]
         public async Task<IActionResult> DownloadTemplateWithDataa(Guid id)
         {
@@ -121,41 +127,43 @@ namespace DotNetWbapi.Controllers
 
         // GET: api/template/{id}/download-with-data
         // GET: api/template/{id}/download-with-data
-[HttpGet("{id}/download-with-data")]
-public async Task<IActionResult> DownloadTemplateWithData(Guid id)
-{
-    try
-    {
-        _logger.LogInformation("Downloading template with data for ID: {Id}", id);
-        
-        // Get the packing list ID from the query parameters
-        var packingListIdStr = Request.Query["packingListId"];
-        if (!Guid.TryParse(packingListIdStr, out var packingListId))
+        [HttpGet("{id}/download-with-data")]
+        public async Task<IActionResult> DownloadTemplateWithData(Guid id)
         {
-            return BadRequest(new { success = false, message = "Valid packing list ID is required" });
+            try
+            {
+                _logger.LogInformation("Downloading template with data for ID: {Id}", id);
+
+                // Get the packing list ID from the query parameters
+                var packingListIdStr = Request.Query["packingListId"];
+                if (!Guid.TryParse(packingListIdStr, out var packingListId))
+                {
+                    return BadRequest(new { success = false, message = "Valid packing list ID is required" });
+                }
+
+                var excelBytes = await _templateService.GenerateExcelWithDataAsync(id, packingListId);
+
+                var template = await _templateService.GetTemplateByIdAsync(id);
+                if (template == null)
+                {
+                    _logger.LogWarning("Template with ID: {Id} not found", id);
+                    return NotFound(new { success = false, message = "Template not found" });
+                }
+
+                return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                           $"{template.Name}_WithData.xlsx");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error downloading template with data for ID: {Id}", id);
+                return StatusCode(500, new { success = false, message = "Internal server error", error = ex.Message });
+            }
         }
 
-        var excelBytes = await _templateService.GenerateExcelWithDataAsync(id, packingListId);
-        
-        var template = await _templateService.GetTemplateByIdAsync(id);
-        if (template == null)
-        {
-            _logger.LogWarning("Template with ID: {Id} not found", id);
-            return NotFound(new { success = false, message = "Template not found" });
-        }
 
-        return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
-                   $"{template.Name}_WithData.xlsx");
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Error downloading template with data for ID: {Id}", id);
-        return StatusCode(500, new { success = false, message = "Internal server error", error = ex.Message });
-    }
-}
-   
-   
-   
+
+        // GET: api/template/packaging-list/columns
+        // Fetches column names for PackagingList table
         [HttpGet("packaging-list/columns")]
         public async Task<IActionResult> GetPackagingListColumns()
         {
@@ -173,6 +181,7 @@ public async Task<IActionResult> DownloadTemplateWithData(Guid id)
         }
 
         // PUT: api/template/{id}
+        // Updates a specific template by ID
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTemplate(Guid id, [FromForm] CreateTemplateDto dto)
         {
@@ -202,6 +211,9 @@ public async Task<IActionResult> DownloadTemplateWithData(Guid id)
             }
         }
         
+
+        // DELETE: api/template/{id}
+        // Deletes a specific template by ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTemplate(Guid id)
         {

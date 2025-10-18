@@ -10,6 +10,7 @@ using QRCoder;
 
 namespace DotNetWbapi.Controllers
 {
+    // declare the API controller with route prefix "api/gatepass"
     [ApiController]
     [Route("api/gatepass")]
     public class GatepassController : ControllerBase
@@ -23,6 +24,9 @@ namespace DotNetWbapi.Controllers
             _logger = logger;
         }
 
+
+        // GET: api/gatepass
+        // Fetches all gatepasses
         [HttpGet]
         public async Task<IActionResult> GetGatepasses()
         {
@@ -31,6 +35,9 @@ namespace DotNetWbapi.Controllers
             return Ok(gatepasses);
         }
 
+
+        // GET: api/gatepass/{id}
+        // Fetches a specific gatepass
         [HttpGet("{id}")]
         public async Task<IActionResult> GetGatepass(Guid id)
         {
@@ -45,6 +52,9 @@ namespace DotNetWbapi.Controllers
             return Ok(gatepass);
         }
 
+
+        // POST: api/gatepass
+        // Creates a new gatepass
         [HttpPost]
         public async Task<IActionResult> CreateGatepass([FromBody] GatepassHeaderDto dto)
         {
@@ -67,6 +77,9 @@ namespace DotNetWbapi.Controllers
             }
         }
 
+
+        // PUT: api/gatepass/{id}
+        // Updates an existing gatepass
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateGatepass(Guid id, [FromBody] GatepassHeaderDto dto)
         {
@@ -90,6 +103,9 @@ namespace DotNetWbapi.Controllers
             }
         }
 
+
+        // DELETE: api/gatepass/{id}
+        // Deletes a gatepass
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGatepass(Guid id)
         {
@@ -131,6 +147,10 @@ namespace DotNetWbapi.Controllers
         //         return File(qrCodeBytes, "image/png");
         //     }
         // }
+
+
+        // GET: api/gatepass/{id}/qr
+        // Generates a QR code for a specific gatepass
         [HttpGet("{id}/qr")]
         public IActionResult GetGatepassQr(Guid id)
         {
@@ -151,8 +171,11 @@ namespace DotNetWbapi.Controllers
 
             return File(qrCodeBytes, "image/png");
         }
-        
 
+
+
+        // POST: api/gatepass/qr/response
+        // Handles the response from the QR code scanner to update outdate and outtime
         [HttpPost("qr/response")]  
         public async Task<IActionResult> SyncGatepassQr([FromBody] List<Guid> ids)
         {

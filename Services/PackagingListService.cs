@@ -10,6 +10,9 @@ using DotNetWbapi.Data;
 
 namespace DotNetWbapi.Services
 {
+
+    // Services/PackagingListService.cs
+    //feature 2.3.1 Packing List (PL) reference from asignment doc file
     public class PackagingListService
     {
         private readonly AppDBContext _context;
@@ -50,6 +53,7 @@ namespace DotNetWbapi.Services
         }
 
         // GET ALL
+        // GET: api/packaging-list
         public async Task<List<PackagingListDto>> GetAllPackagingListsAsync()
         {
             try
@@ -69,6 +73,7 @@ namespace DotNetWbapi.Services
         }
 
         // CREATE
+        // POST: api/packaging-list
         public async Task<PackagingListDto> CreatePackagingListAsync(CreatePackagingListDto dto)
         {
             try
@@ -139,6 +144,7 @@ namespace DotNetWbapi.Services
         }
 
         // UPDATE
+        // PUT: api/packaging-list/{id}
         public async Task<PackagingListDto?> UpdatePackagingListAsync(Guid id, UpdatePackagingListDto dto)
         {
             try
@@ -213,6 +219,7 @@ namespace DotNetWbapi.Services
         }
 
         // DELETE
+        // DELETE: api/packaging-list/{id}
         public async Task<bool> DeletePackagingListAsync(Guid id)
         {
             try
@@ -240,6 +247,7 @@ namespace DotNetWbapi.Services
         }
 
         // GET Declaration Questions
+        // GET: api/packaging-list/declaration-questions
         public async Task<List<DeclarationQuestionDto>> GetDeclarationQuestionsAsync()
         {
             try
@@ -284,6 +292,7 @@ namespace DotNetWbapi.Services
         }
 
         // GET Packaging List by Status
+        // GET: api/packaging-list/status/{status}
         public async Task<List<PackagingListDto>> GetPackagingListsByStatusAsync(string status)
         {
             try
@@ -304,6 +313,7 @@ namespace DotNetWbapi.Services
         }
 
         // GET Packaging List by Company
+        // GET: api/packaging-list/company/{company}
         public async Task<List<PackagingListDto>> GetPackagingListsByCompanyAsync(string company)
         {
             try
@@ -324,6 +334,7 @@ namespace DotNetWbapi.Services
         }
 
         // Helper method to map Model to DTO
+        // private PackagingListDto MapToDto(PackagingList packagingList)
         private PackagingListDto MapToDto(PackagingList packagingList)
         {
             return new PackagingListDto
@@ -409,29 +420,35 @@ namespace DotNetWbapi.Services
 
 
 
-public async Task<List<string>> GetPackagingListColumnsAsync()
-{
-    try
-    {
-        _logger.LogInformation("Getting column names for export model");
+        // GET: api/packaging-list/columns
+        // Fetches column names for PackagingList table
 
-        // Get the property names of the PackingDetailForExport class
-        var properties = typeof(PackingDetailForExport).GetProperties();
+        public async Task<List<string>> GetPackagingListColumnsAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Getting column names for export model");
 
-        // Return all property names
-        var columnNames = properties
-            .Select(p => p.Name)
-            .ToList();
+                // Get the property names of the PackingDetailForExport class
+                var properties = typeof(PackingDetailForExport).GetProperties();
 
-        return await Task.FromResult(columnNames);
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Error getting column names for export model");
-        throw;
-    }
-}
+                // Return all property names
+                var columnNames = properties
+                    .Select(p => p.Name)
+                    .ToList();
+
+                return await Task.FromResult(columnNames);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting column names for export model");
+                throw;
+            }
+        }
+
+
         // Helper method to map PackingDetail DTOs to Model
+        // private List<PackingDetail> MapPackingDetails(List<PackingDetailDto> dtos)
         private List<PackingDetail> MapPackingDetails(List<PackingDetailDto> dtos)
         {
             return dtos.Select(dto => new PackingDetail
@@ -459,6 +476,7 @@ public async Task<List<string>> GetPackagingListColumnsAsync()
         }
 
         // Helper method to map DeclarationAnswer DTOs to Model
+        // private List<DeclarationAnswer> MapDeclarationAnswers(List<DeclarationAnswerDto> dtos)
         private List<DeclarationAnswer> MapDeclarationAnswers(List<DeclarationAnswerDto> dtos)
         {
             return dtos.Select(dto => new DeclarationAnswer
@@ -476,6 +494,7 @@ public async Task<List<string>> GetPackagingListColumnsAsync()
    
 
     // Additional DTO for declaration questions
+    //  
     public class DeclarationQuestionDto
     {
         public int QuestionNumber { get; set; }
@@ -483,8 +502,6 @@ public async Task<List<string>> GetPackagingListColumnsAsync()
     }
 
 
-
-    // Add this method to your PackagingListService.cs
 
        
 }

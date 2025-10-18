@@ -122,6 +122,7 @@ function renderDeclarationQuestions(questions) {
 
 // Load packaging list data if editing
 async function loadPackagingList(id) {
+    console.log("loadde caleed",id)
     try {
         showToast('Loading packaging list...', 'info');
         
@@ -130,7 +131,7 @@ async function loadPackagingList(id) {
         
         const data = await response.json();
         const packagingList = data.data;
-        
+        console.log("data to update",packagingList)
         // Set form fields
         $('#company').val(packagingList.company);
         $('#buyer').val(packagingList.buyer);
@@ -184,7 +185,15 @@ async function loadPackagingList(id) {
         savePackingListId(id);
         document.getElementById('pageTitle').textContent = 'Edit Packing List';
         document.getElementById('saveButtonText').textContent = 'UPDATE';
-        
+        console.log("statys",packagingList.status)
+        if (packagingList.status === 'locked') {
+             document.querySelectorAll('input, select, textarea, button').forEach(el => {
+    // Skip the one you want to remain enabled
+                if (!el.classList.contains('btn-cancel')) { 
+                el.disabled = true;
+                }
+            });
+        }
         showToast('Packaging list loaded successfully', 'success');
     } catch (error) {
         console.error('Error loading packaging list:', error);

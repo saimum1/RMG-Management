@@ -16,6 +16,9 @@ using System.Reflection;
 
 namespace DotNetWbapi.Services
 {
+
+    // Services/TemplateService.cs
+    //feature 2.3.2 Packing List Excel Template Management reference from asignment doc file
     public class TemplateService
     {
         private readonly AppDBContext _context;
@@ -34,8 +37,9 @@ namespace DotNetWbapi.Services
 
 
 
-        
 
+        // GET: api/template
+        // Fetches all templates
         public async Task<List<TemplateDto>> GetAllTemplatesAsync()
         {
             try
@@ -55,6 +59,9 @@ namespace DotNetWbapi.Services
             }
         }
 
+
+        // GET: api/template/{id}
+        // Fetches a specific template by ID
         public async Task<TemplateDto?> GetTemplateByIdAsync(Guid id)
         {
             try
@@ -79,6 +86,9 @@ namespace DotNetWbapi.Services
             }
         }
 
+
+        // POST: api/template
+        // Creates a new template
         public async Task<TemplateDto> CreateTemplateAsync(CreateTemplateDto dto)
         {
             try
@@ -121,6 +131,10 @@ namespace DotNetWbapi.Services
             }
         }
 
+
+
+        // PUT: api/template/{id}
+        // Updates an existing template
         public async Task<byte[]> GenerateExcelWithDataAsync(Guid templateId)
         {
             try
@@ -212,6 +226,9 @@ namespace DotNetWbapi.Services
         }
 
 
+
+        // PUT: api/template/{id}
+        // Updates an existing template
         public async Task<bool> UpdateTemplateAsync(Guid id, CreateTemplateDto dto)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -268,6 +285,9 @@ namespace DotNetWbapi.Services
         }
 
 
+
+        // DELETE: api/template/{id}
+        // Deletes a template
         public async Task<bool> DeleteTemplateAsync(Guid id)
         {
             try
@@ -300,145 +320,156 @@ namespace DotNetWbapi.Services
         }
 
 
+
+        // GET: api/template/{id}/download-with-data
+        // GET: api/template/{id}/download-with-data
         public async Task<byte[]> GenerateExcelWithDataAsync(Guid templateId, Guid packingListId)
-{
-    try
-    {
-        _logger.LogInformation("Generating Excel with data for template ID: {TemplateId} and packing list ID: {PackingListId}", templateId, packingListId);
-
-        // Get template with mappings
-        var template = await _context.Templates
-            .Include(t => t.Mappings)
-            .FirstOrDefaultAsync(t => t.Id == templateId);
-
-        if (template == null)
         {
-            throw new Exception($"Template with ID {templateId} not found");
-        }
+            try
+            {
+                _logger.LogInformation("Generating Excel with data for template ID: {TemplateId} and packing list ID: {PackingListId}", templateId, packingListId);
 
-        // Get packaging list
-        var packagingList = await _context.PackagingLists
-            .FirstOrDefaultAsync(pl => pl.Id == packingListId);
+                // Get template with mappings
+                var template = await _context.Templates
+                    .Include(t => t.Mappings)
+                    .FirstOrDefaultAsync(t => t.Id == templateId);
 
-        if (packagingList == null)
-        {
-            throw new Exception($"Packaging list with ID {packingListId} not found");
-        }
+                if (template == null)
+                {
+                    throw new Exception($"Template with ID {templateId} not found");
+                }
 
-        // Get packing details from JSON
-        var packingDetails = packagingList.GetPackingDetails();
+                // Get packaging list
+                var packagingList = await _context.PackagingLists
+                    .FirstOrDefaultAsync(pl => pl.Id == packingListId);
 
-        // Define the packing detail field names (PascalCase)
-        var packingDetailFields = new List<string>
+                if (packagingList == null)
+                {
+                    throw new Exception($"Packaging list with ID {packingListId} not found");
+                }
+
+                // Get packing details from JSON
+                var packingDetails = packagingList.GetPackingDetails();
+
+                // Define the packing detail field names (PascalCase)
+                var packingDetailFields = new List<string>
         {
             "Sl", "NoOfCarton", "Start", "End", "SizeName", "Ratio", "ArticleNo",
             "PcsPack", "PacCarton", "OrderQty", "TotalPcs", "TotalPacs", "GWt",
             "NWt", "TotalWt", "L", "W", "H", "CBM"
         };
 
-        // Separate mappings into main and detail
-        var mainMappings = template.Mappings
-            .Where(m => !packingDetailFields.Contains(m.DatabaseField))
-            .ToList();
+                // Separate mappings into main and detail
+                var mainMappings = template.Mappings
+                    .Where(m => !packingDetailFields.Contains(m.DatabaseField))
+                    .ToList();
 
-        var detailMappings = template.Mappings
-            .Where(m => packingDetailFields.Contains(m.DatabaseField))
-            .ToList();
+                var detailMappings = template.Mappings
+                    .Where(m => packingDetailFields.Contains(m.DatabaseField))
+                    .ToList();
 
-        // Create a new Excel package
-        using (var package = new ExcelPackage())
-        {
-            // Create main data worksheet
-            var mainWs = package.Workbook.Worksheets.Add("Main Data");
-
-            // Add header row for main data
-            for (int i = 0; i < mainMappings.Count; i++)
-            {
-                mainWs.Cells[1, i + 1].Value = mainMappings[i].ExcelColumn;
-            }
-            // Add Packing List ID column
-            mainWs.Cells[1, mainMappings.Count + 1].Value = "Packing List ID";
-
-            // Add data row for main data
-            for (int i = 0; i < mainMappings.Count; i++)
-            {
-                var mapping = mainMappings[i];
-                // Convert PascalCase to camelCase
-                var camelCaseProperty = char.ToLower(mapping.DatabaseField[0]) + mapping.DatabaseField.Substring(1);
-                var propertyValue = packagingList.GetType().GetProperty(camelCaseProperty)?.GetValue(packagingList);
-                mainWs.Cells[2, i + 1].Value = propertyValue?.ToString() ?? "";
-            }
-            // Add packing list ID - Now using the parameter
-            mainWs.Cells[2, mainMappings.Count + 1].Value = packingListId.ToString();
-
-            // Create packing details worksheet if there are detail mappings
-            if (detailMappings.Any())
-            {
-                var detailWs = package.Workbook.Worksheets.Add("Packing Details");
-
-                // Add header row for packing details
-                for (int i = 0; i < detailMappings.Count; i++)
+                // Create a new Excel package
+                using (var package = new ExcelPackage())
                 {
-                    detailWs.Cells[1, i + 1].Value = detailMappings[i].ExcelColumn;
-                }
+                    // Create main data worksheet
+                    var mainWs = package.Workbook.Worksheets.Add("Main Data");
 
-                // Add data rows for packing details
-                for (int row = 0; row < packingDetails.Count; row++)
-                {
-                    var detail = packingDetails[row];
-                    for (int col = 0; col < detailMappings.Count; col++)
+                    // Add header row for main data
+                    for (int i = 0; i < mainMappings.Count; i++)
                     {
-                        var mapping = detailMappings[col];
+                        mainWs.Cells[1, i + 1].Value = mainMappings[i].ExcelColumn;
+                    }
+                    // Add Packing List ID column
+                    mainWs.Cells[1, mainMappings.Count + 1].Value = "Packing List ID";
+
+                    // Add data row for main data
+                    for (int i = 0; i < mainMappings.Count; i++)
+                    {
+                        var mapping = mainMappings[i];
                         // Convert PascalCase to camelCase
                         var camelCaseProperty = char.ToLower(mapping.DatabaseField[0]) + mapping.DatabaseField.Substring(1);
-                        var propertyValue = detail.GetType().GetProperty(camelCaseProperty)?.GetValue(detail);
-                        detailWs.Cells[row + 2, col + 1].Value = propertyValue?.ToString() ?? "";
+                        var propertyValue = packagingList.GetType().GetProperty(camelCaseProperty)?.GetValue(packagingList);
+                        mainWs.Cells[2, i + 1].Value = propertyValue?.ToString() ?? "";
                     }
-                }
-            }
+                    // Add packing list ID - Now using the parameter
+                    mainWs.Cells[2, mainMappings.Count + 1].Value = packingListId.ToString();
 
-            // Return the Excel file as byte array
-            return package.GetAsByteArray();
-        }
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Error generating Excel with data for template ID: {TemplateId} and packing list ID: {PackingListId}", templateId, packingListId);
-        throw;
-    }
-}
-        public async Task<List<DatabaseColumnDto>> GetDatabaseColumnsAsync()
-            {
-                try
-                {
-                    _logger.LogInformation("Fetching database columns");
-                    
-                    // Get all properties of PackagingListDto
-                    var properties = typeof(PackagingListDto).GetProperties();
-                    
-                    var columns = properties.Select(p => 
+                    // Create packing details worksheet if there are detail mappings
+                    if (detailMappings.Any())
                     {
-                        string displayName = System.Text.RegularExpressions.Regex.Replace(p.Name, "([A-Z])", " $1").TrimStart();
-                        if (!string.IsNullOrEmpty(displayName))
+                        var detailWs = package.Workbook.Worksheets.Add("Packing Details");
+
+                        // Add header row for packing details
+                        for (int i = 0; i < detailMappings.Count; i++)
                         {
-                            displayName = char.ToUpper(displayName[0]) + displayName.Substring(1);
+                            detailWs.Cells[1, i + 1].Value = detailMappings[i].ExcelColumn;
                         }
-                        
-                        return new DatabaseColumnDto
+
+                        // Add data rows for packing details
+                        for (int row = 0; row < packingDetails.Count; row++)
                         {
-                            Name = p.Name,
-                            DisplayName = displayName
-                        };
-                    }).ToList();
-                    
-                    return columns;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error fetching database columns");
-                    throw;
+                            var detail = packingDetails[row];
+                            for (int col = 0; col < detailMappings.Count; col++)
+                            {
+                                var mapping = detailMappings[col];
+                                // Convert PascalCase to camelCase
+                                var camelCaseProperty = char.ToLower(mapping.DatabaseField[0]) + mapping.DatabaseField.Substring(1);
+                                var propertyValue = detail.GetType().GetProperty(camelCaseProperty)?.GetValue(detail);
+                                detailWs.Cells[row + 2, col + 1].Value = propertyValue?.ToString() ?? "";
+                            }
+                        }
+                    }
+
+                    // Return the Excel file as byte array
+                    return package.GetAsByteArray();
                 }
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating Excel with data for template ID: {TemplateId} and packing list ID: {PackingListId}", templateId, packingListId);
+                throw;
+            }
+        }
+
+
+        // GET: api/template/packaging-list/columns
+        // Fetches column names for PackagingList table
+        public async Task<List<DatabaseColumnDto>> GetDatabaseColumnsAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Fetching database columns");
+
+                // Get all properties of PackagingListDto
+                var properties = typeof(PackagingListDto).GetProperties();
+
+                var columns = properties.Select(p =>
+                {
+                    string displayName = System.Text.RegularExpressions.Regex.Replace(p.Name, "([A-Z])", " $1").TrimStart();
+                    if (!string.IsNullOrEmpty(displayName))
+                    {
+                        displayName = char.ToUpper(displayName[0]) + displayName.Substring(1);
+                    }
+
+                    return new DatabaseColumnDto
+                    {
+                        Name = p.Name,
+                        DisplayName = displayName
+                    };
+                }).ToList();
+
+                return columns;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching database columns");
+                throw;
+            }
+        }
+            
+
+        // Helper method to map Template to TemplateDto
+            
         private TemplateDto MapToDto(Template template)
         {
             return new TemplateDto

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace DotNetWbapi.Controllers
 {
+
+    // declare the API controller with route prefix "api/deliverychallan"
     [Route("api/deliverychallan")]
     [ApiController]
     public class DeliveryChallanControllerCreation : ControllerBase
@@ -20,6 +22,9 @@ namespace DotNetWbapi.Controllers
             _logger = logger;
         }
 
+
+        // GET: api/deliverychallan
+        // Fetches all delivery challans
         [HttpGet]
         public async Task<IActionResult> GetDeliveryChallans()
         {
@@ -28,6 +33,9 @@ namespace DotNetWbapi.Controllers
             return Ok(challans);
         }
 
+
+        // POST: api/deliverychallan
+        // Creates a new delivery challan
         [HttpPost]
         public async Task<IActionResult> CreateDeliveryChallan([FromBody] DeliveryChallanHeaderCreationDto dto)
         {
@@ -37,6 +45,8 @@ namespace DotNetWbapi.Controllers
         }
 
 
+        // PUT: api/deliverychallan/{id}
+        // Updates an existing delivery challan
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDeliveryChallan(Guid id, [FromBody] DeliveryChallanHeaderCreationDto dto)
         {
@@ -64,6 +74,9 @@ namespace DotNetWbapi.Controllers
             }
         }
 
+
+        // GET: api/deliverychallan/{id}
+        // Fetches a specific delivery challan
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDeliveryChallan(Guid id)
         {
@@ -77,6 +90,9 @@ namespace DotNetWbapi.Controllers
             return Ok(challan);
         }
 
+
+        // DELETE: api/deliverychallan/{id}
+        // Deletes a delivery challan
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDeliveryChallan(Guid id)
         {
@@ -90,6 +106,9 @@ namespace DotNetWbapi.Controllers
             return NotFound("Delivery challan not found");
         }
 
+
+        // GET: api/deliverychallan/{id}/qr
+        // Generates a QR code for a specific delivery challan
         [HttpGet("{id}/qr")]
         public IActionResult GetDeliveryChallanQr(Guid id)
         {

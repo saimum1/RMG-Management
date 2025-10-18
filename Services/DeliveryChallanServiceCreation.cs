@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace DotNetWbapi.Services
 {
+
+    // Services/DeliveryChallanServiceCreation.cs
+    //feature 2.3.2 Delivery Challan (DC) reference from asignment doc file
     public class DeliveryChallanServiceCreation
     {
         private readonly AppDBContext _context;
@@ -21,16 +24,20 @@ namespace DotNetWbapi.Services
             _logger = logger;
         }
 
+
+
+        // GET: api/delivery-challan
+        // Fetches all delivery challans
         public async Task<List<DeliveryChallanHeaderCreationDto>> GetDeliveryChallansAsync()
         {
             return await _context.DeliveryChallanHeaderCreation
-            
+
                 .Select(h => new DeliveryChallanHeaderCreationDto
                 {
                     Id = h.Id,
                     ChallanNo = h.ChallanNo,
                     // ExistingTruckNo = h.ExistingTruckNo,
-                    ExistingTruckNo = h.ExistingTruckNo ?? "Default Value", 
+                    ExistingTruckNo = h.ExistingTruckNo ?? "Default Value",
                     HireTruckNo = h.HireTruckNo,
                     InDate = h.InDate,
                     InTime = h.InTime,
@@ -66,6 +73,9 @@ namespace DotNetWbapi.Services
                 .ToListAsync();
         }
 
+
+        // POST: api/delivery-challan
+        // Creates a new delivery challan
         public async Task<DeliveryChallanHeaderCreationDto> CreateDeliveryChallanAsync(DeliveryChallanHeaderCreationDto dto)
         {
             _logger.LogInformation("Creating delivery challan with ChallanNo: {ChallanNo}", dto);
@@ -77,7 +87,7 @@ namespace DotNetWbapi.Services
                 _logger.LogWarning("Delivery challan with ChallanNo {ChallanNo} already exists", dto.ChallanNo);
                 throw new InvalidOperationException("A delivery challan with this Challan No. already exists.");
             }
- 
+
             var header = new DeliveryChallanHeaderCreation
             {
                 Id = dto.Id == Guid.Empty ? Guid.NewGuid() : dto.Id,
@@ -99,11 +109,11 @@ namespace DotNetWbapi.Services
                 TransportCompany = dto.TransportCompany,
                 LockNo = dto.LockNo,
                 RentedAmount = dto.RentedAmount,
-                    remarks = dto.remarks,
-                    descriptions = dto.descriptions,
-                    agdl = dto.agdl,
-                    unit = dto.unit,
-                    quantity = dto.quantity,
+                remarks = dto.remarks,
+                descriptions = dto.descriptions,
+                agdl = dto.agdl,
+                unit = dto.unit,
+                quantity = dto.quantity,
 
             };
 
@@ -134,6 +144,9 @@ namespace DotNetWbapi.Services
             return dto;
         }
 
+
+        // GET: api/delivery-challan/{id}
+        // Fetches a specific delivery challan
         public async Task<DeliveryChallanHeaderCreationDto?> GetDeliveryChallanAsync(Guid id)
         {
             var header = await _context.DeliveryChallanHeaderCreation
@@ -166,11 +179,11 @@ namespace DotNetWbapi.Services
                 TransportCompany = header.TransportCompany,
                 LockNo = header.LockNo,
                 RentedAmount = header.RentedAmount,
-remarks = header.remarks,
-                    descriptions = header.descriptions,
-                    agdl = header.agdl,
-                    unit = header.unit,
-                    quantity = header.quantity,
+                remarks = header.remarks,
+                descriptions = header.descriptions,
+                agdl = header.agdl,
+                unit = header.unit,
+                quantity = header.quantity,
                 // CBMItems = header.CBMDetails.Select(d => new DeliveryChallanDetailCreationDto
                 // {
                 //     Id = d.Id,
@@ -181,6 +194,9 @@ remarks = header.remarks,
             };
         }
 
+
+        // DELETE: api/delivery-challan/{id}
+        // Deletes a delivery challan
         public async Task<bool> DeleteDeliveryChallanAsync(Guid id)
         {
             var header = await _context.DeliveryChallanHeaderCreation

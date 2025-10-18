@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace DotNetWbapi.Services
 {
+
+    // Services/TruckService.cs
     public class TruckService
     {
         private readonly AppDBContext _context;
@@ -20,6 +22,9 @@ namespace DotNetWbapi.Services
             _context = context;
             _logger = logger;
         }
+
+
+        // Services/TruckService.cs
 
         public async Task<List<TruckResponseDto>> GetTrucksAsync()
         {
@@ -39,6 +44,7 @@ namespace DotNetWbapi.Services
                 .ToListAsync();
         }
 
+        // Services/TruckService.cs
         public async Task<TruckResponseDto?> GetTruckAsync(Guid id)
         {
             var truck = await _context.Trucks.FindAsync(id);

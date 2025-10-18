@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace DotNetWbapi.Controllers
 {
+
+    // declare the API controller with route prefix "api/truck"
     [Route("api/truck")]
     [ApiController]
     public class TruckController : ControllerBase
@@ -20,6 +22,9 @@ namespace DotNetWbapi.Controllers
             _logger = logger;
         }
 
+
+        // GET: api/truck
+        // Fetches all trucks
         [HttpGet]
         public async Task<IActionResult> GetTrucks()
         {
@@ -28,6 +33,9 @@ namespace DotNetWbapi.Controllers
             return Ok(trucks);
         }
 
+
+        // GET: api/truck/{id}
+        // Fetches a specific truck
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTruck(Guid id)
         {
@@ -41,6 +49,10 @@ namespace DotNetWbapi.Controllers
             return Ok(truck);
         }
 
+
+
+        // POST: api/truck
+        // Creates a new truck
         [HttpPost]
         public async Task<IActionResult> CreateTruck([FromBody] TruckDto dto)
         {
@@ -62,6 +74,10 @@ namespace DotNetWbapi.Controllers
             }
         }
 
+
+        // POST: api/truck/list
+        // Creates a list of trucks
+
         [HttpPost("list")]
         public async Task<IActionResult> CreateTrucks([FromBody] TruckListDto dto)
         {
@@ -77,6 +93,10 @@ namespace DotNetWbapi.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+
+        // PUT: api/truck/{id}
+        // Updates a specific truck
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTruck(Guid id, [FromBody] TruckDto dto)
@@ -109,6 +129,10 @@ namespace DotNetWbapi.Controllers
             }
         }
 
+
+
+        // DELETE: api/truck/{id}
+        // Deletes a specific truck
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTruck(Guid id)
         {

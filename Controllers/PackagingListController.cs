@@ -8,6 +8,8 @@ using DotNetWbapi.Dtos;
 
 namespace DotNetWbapi.Controllers
 {
+
+    // declare the API controller with route prefix "api/packaging-list"
     [ApiController]
     [Route("api/packaging-list")]
     public class PackagingListController : ControllerBase
@@ -24,6 +26,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // GET: api/packaging-list
+        // Fetches all packaging lists
         [HttpGet]
         public async Task<IActionResult> GetPackagingLists()
         {
@@ -41,6 +44,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // GET: api/packaging-list/{id}
+        // Fetches a specific packaging list by ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPackagingList(Guid id)
         {
@@ -48,7 +52,7 @@ namespace DotNetWbapi.Controllers
             {
                 _logger.LogInformation("Fetching packaging list with ID: {Id}", id);
                 var packagingList = await _packagingListService.GetPackagingListByIdAsync(id);
-                
+
                 if (packagingList == null)
                 {
                     _logger.LogWarning("Packaging list with ID: {Id} not found", id);
@@ -65,6 +69,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // GET: api/packaging-list/declaration-questions
+        // Fetches all declaration questions
         [HttpGet("declaration-questions")]
         public async Task<IActionResult> GetDeclarationQuestions()
         {
@@ -82,6 +87,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // GET: api/packaging-list/status/{status}
+        // Fetches packaging lists by status
         [HttpGet("status/{status}")]
         public async Task<IActionResult> GetPackagingListsByStatus(string status)
         {
@@ -99,6 +105,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // GET: api/packaging-list/company/{company}
+        // Fetches packaging lists by company
         [HttpGet("company/{company}")]
         public async Task<IActionResult> GetPackagingListsByCompany(string company)
         {
@@ -116,6 +123,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // POST: api/packaging-list
+        // Creates a new packaging list
         [HttpPost]
         public async Task<IActionResult> CreatePackagingList([FromBody] CreatePackagingListDto dto)
         {
@@ -129,10 +137,10 @@ namespace DotNetWbapi.Controllers
 
                 _logger.LogInformation("Creating packaging list for company: {Company}, buyer: {Buyer}", dto.Company, dto.Buyer);
                 var newPackagingList = await _packagingListService.CreatePackagingListAsync(dto);
-                
+
                 return CreatedAtAction(
-                    nameof(GetPackagingList), 
-                    new { id = newPackagingList.Id }, 
+                    nameof(GetPackagingList),
+                    new { id = newPackagingList.Id },
                     new { success = true, data = newPackagingList });
             }
             catch (Exception ex)
@@ -143,6 +151,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // PUT: api/packaging-list/{id}
+        // Updates a specific packaging list by ID
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePackagingList(Guid id, [FromBody] UpdatePackagingListDto dto)
         {
@@ -156,7 +165,7 @@ namespace DotNetWbapi.Controllers
 
                 _logger.LogInformation("Updating packaging list with ID: {Id}", id);
                 var updatedPackagingList = await _packagingListService.UpdatePackagingListAsync(id, dto);
-                
+
                 if (updatedPackagingList == null)
                 {
                     _logger.LogWarning("Packaging list with ID: {Id} not found for update", id);
@@ -173,6 +182,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // DELETE: api/packaging-list/{id}
+        // Deletes a specific packaging list by ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePackagingList(Guid id)
         {
@@ -198,6 +208,8 @@ namespace DotNetWbapi.Controllers
 
 
 
+        // GET: api/packaging-list/columns
+        // Fetches column names for PackagingList table
         [HttpGet("columns")]
         public async Task<IActionResult> GetPackagingListColumns()
         {
@@ -215,6 +227,7 @@ namespace DotNetWbapi.Controllers
         }
 
         // PATCH: api/packaging-list/{id}/status
+        // Updates the status of a specific packaging list by ID
         [HttpPatch("{id}/status")]
         public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] UpdateStatusDto dto)
         {
@@ -226,7 +239,7 @@ namespace DotNetWbapi.Controllers
                 }
 
                 _logger.LogInformation("Updating status for packaging list with ID: {Id} to {Status}", id, dto.Status);
-                
+
                 // Get the existing packaging list
                 var existingList = await _packagingListService.GetPackagingListByIdAsync(id);
                 if (existingList == null)
@@ -260,7 +273,7 @@ namespace DotNetWbapi.Controllers
                     LmkgNo = existingList.LmkgNo,
                     OrmsStyleNo = existingList.OrmsStyleNo,
                     Status = dto.Status,
-                    
+
                     // Buyer Specific Fields
                     ItemNo = existingList.ItemNo,
                     Pod = existingList.Pod,
@@ -269,7 +282,7 @@ namespace DotNetWbapi.Controllers
                     NoOfColor = existingList.NoOfColor,
                     KeyCode = existingList.KeyCode,
                     SupplierCode = existingList.SupplierCode,
-                    
+
                     // Additional Fields
                     Cartons = existingList.Cartons,
                     OrderQtyPac = existingList.OrderQtyPac,
@@ -277,13 +290,13 @@ namespace DotNetWbapi.Controllers
                     ShipQtyPac = existingList.ShipQtyPac,
                     ShipQtyPcs = existingList.ShipQtyPcs,
                     Destination = existingList.Destination,
-                    
+
                     PackingDetails = existingList.PackingDetails,
                     DeclarationAnswers = existingList.DeclarationAnswers
                 };
 
                 var updatedPackagingList = await _packagingListService.UpdatePackagingListAsync(id, updateDto);
-                
+
                 return Ok(new { success = true, data = updatedPackagingList });
             }
             catch (Exception ex)
@@ -295,6 +308,7 @@ namespace DotNetWbapi.Controllers
     }
 
     // DTO for status update
+    
     public class UpdateStatusDto
     {
         public string Status { get; set; } = string.Empty;
@@ -302,7 +316,6 @@ namespace DotNetWbapi.Controllers
 
 
 
-    // Add this endpoint to your PackagingListController.cs
 
     
 }

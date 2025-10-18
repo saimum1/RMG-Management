@@ -14,6 +14,9 @@ using System.Data.SqlClient;
 
 namespace DotNetWbapi.Services
 {
+
+    // Services/GatepassService.cs
+    //feature 2.3.4 Gatepass (GP) reference from asignment doc file
     public class GatepassService
     {
         private readonly AppDBContext _context;
@@ -21,7 +24,10 @@ namespace DotNetWbapi.Services
 
         private readonly ILogger<GatepassService> _logger;
 
-        public GatepassService(AppDBContext context, ILogger<GatepassService> logger ,IConfiguration configuration)
+
+        // Services/GatepassService.cs
+        //feature 2.3.4 Gatepass (GP) reference from asignment doc file
+        public GatepassService(AppDBContext context, ILogger<GatepassService> logger, IConfiguration configuration)
         {
             _context = context;
             _logger = logger;
@@ -33,6 +39,8 @@ namespace DotNetWbapi.Services
             _db = new DbHelper(connString, useMySql);
         }
 
+        // Services/GatepassService.cs
+        //Post: api/gatepass
         public async Task<GatepassHeaderDto> CreateGatepassAsync(GatepassHeaderDto dto)
         {
             _logger.LogInformation("Creating gatepass with GatePassNo: {GatePassNo}", dto.GatePassNo);
@@ -77,6 +85,11 @@ namespace DotNetWbapi.Services
             return dto;
         }
 
+
+        // Services/GatepassService.cs
+        // Get: api/gatepass/{id}
+        //feature 2.3.4 Gatepass (GP) reference from asignment doc file
+
         public async Task<GatepassHeaderDto?> GetGatepassByIdAsync(Guid id)
         {
             var gatepass = await _context.GatepassHeaders.FindAsync(id);
@@ -101,6 +114,11 @@ namespace DotNetWbapi.Services
                 Remarks = gatepass.Remarks
             };
         }
+
+
+
+        // Services/GatepassService.cs
+        //feature 2.3.4 Gatepass (GP) reference from asignment doc file
 
         public async Task<List<GatepassHeaderDto>> GetAllGatepassesAsync()
         {
@@ -137,41 +155,44 @@ namespace DotNetWbapi.Services
         }
 
 
-    public async Task<bool> SyncGatepassAsync(List<Guid> ids)
-    {
-        if (ids == null || ids.Count == 0)
-            return false;
 
-        var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
-        var currentTime = DateTime.Now.ToString("HH:mm");
+        // Services/GatepassService.cs
+        //feature 2.3.5 Gate PWA (Mobile)
+        public async Task<bool> SyncGatepassAsync(List<Guid> ids)
+        {
+            if (ids == null || ids.Count == 0)
+                return false;
 
-        // Build parameter placeholders: @id0, @id1, ...
-        var inParams = string.Join(", ", ids.Select((_, i) => $"@id{i}"));
+            var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+            var currentTime = DateTime.Now.ToString("HH:mm");
 
-        // Build the query
-        var sql = $@"
+            // Build parameter placeholders: @id0, @id1, ...
+            var inParams = string.Join(", ", ids.Select((_, i) => $"@id{i}"));
+
+            // Build the query
+            var sql = $@"
             UPDATE DeliveryChallanHeaderCreation
             SET OutDate = @OutDate,
                 OutTime = @OutTime
             WHERE Id IN ({inParams})";
 
-        // Build parameters array
-        var parameters = ids.Select((id, i) => ($"@id{i}", (object)id)).ToList();
-        parameters.Add(("@OutDate", currentDate));
-        parameters.Add(("@OutTime", currentTime));
+            // Build parameters array
+            var parameters = ids.Select((id, i) => ($"@id{i}", (object)id)).ToList();
+            parameters.Add(("@OutDate", currentDate));
+            parameters.Add(("@OutTime", currentTime));
 
-        try
-        {
-            int rows = await _db.ExecuteAsync(sql, parameters.ToArray());
-            return rows > 0;
+            try
+            {
+                int rows = await _db.ExecuteAsync(sql, parameters.ToArray());
+                return rows > 0;
+            }
+            catch (Exception ex)
+            {
+                // Log error
+                Console.WriteLine($"Error syncing gatepasses: {ex}");
+                return false;
+            }
         }
-        catch (Exception ex)
-        {
-            // Log error
-            Console.WriteLine($"Error syncing gatepasses: {ex}");
-            return false;
-        }
-    }
 
 
 
