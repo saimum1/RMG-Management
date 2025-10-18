@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packing Lists</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .section {
+            padding: 25px 30px;
+            background: white;
+            border-radius: 8px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            background: #ffc107;
+            color: #2c3e50;
+            padding: 12px 20px;
+            margin: -25px -30px 20px;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title.orange {
+            background: #ff9800;
+            color: white;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .table-fixed-height {
+            height: 600px;
+            overflow-y: auto;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-draft {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #007bff;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #dee2e6;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-list-alt me-2"></i> Packing Lists</h1>
+            <a href="../PackingListCreation/packingcreation.html" target="_blank">
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create New
+                </button>
+            </a>
+        </div>
+
+        <div class="section">
+            <div class="section-title orange">
+                Packing Lists
+            </div>
+            <div class="table-container">
+                <div class="table-fixed-height">
+                    <table class="table table-striped table-hover" id="packagingListsTable">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th>ID</th>
+                                <th>Company</th>
+                                <th>Buyer</th>
+                                <th>Style</th>
+                                <th>Purchase Order</th>
+                                <th>Status</th>
+                                <th>Created Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="packagingListsTableBody">
+                            <tr>
+                                <td colspan="8" class="loading">
+                                    <div class="spinner"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <nav aria-label="Page navigation" id="pagination"></nav>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalItems = 0;
+        let packagingLists = [];
+
+        // Load packaging lists from API
+        async function loadPackagingLists(page = 1) {
+            try {
+                showToast('Loading packaging lists...', 'info');
+                
+                // Build query parameters
+                let queryParams = new URLSearchParams({
+                    page: page,
+                    pageSize: pageSize
+                });
+                
+                const response = await fetch(`/api/packaging-list?${queryParams}`);
+                if (!response.ok) throw new Error('Failed to load packaging lists');
+                
+                const data = await response.json();
+                packagingLists = data.data;
+                totalItems = packagingLists.length;
+                
+                renderPackagingLists(packagingLists);
+                renderPagination(page, Math.ceil(totalItems / pageSize));
+                
+                if (packagingLists.length === 0) {
+                    renderEmptyState();
+                }
+            } catch (error) {
+                console.error('Error loading packaging lists:', error);
+                showToast('Error loading packaging lists', 'error');
+                renderEmptyState();
+            }
+        }
+
+        // Render packaging lists in table
+        function renderPackagingLists(lists) {
+            const tbody = document.getElementById('packagingListsTableBody');
+            tbody.innerHTML = '';
+            
+            if (lists.length === 0) {
+                renderEmptyState();
+                return;
+            }
+            
+            lists.forEach(list => {
+                const createdDate = new Date(list.createdAt).toLocaleDateString();
+                const statusClass = `status-${list.status}`;
+                
+                const row = `
+                    <tr>
+                        <td>${list.id.toString().substring(0, 8)}...</td>
+                        <td>${list.company}</td>
+                        <td>${list.buyer}</td>
+                        <td>${list.style || '-'}</td>
+                        <td>${list.purchaseOrder || '-'}</td>
+                        <td><span class="status-badge ${statusClass}">${list.status}</span></td>
+                        <td>${createdDate}</td>
+                        <td>
+                            <div class="btn-group">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i> Actions
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#" onclick="viewPackagingList('${list.id}')">
+                                            <i class="fas fa-eye me-2"></i> View
+                                        </a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="editPackagingList('${list.id}')">
+                                            <i class="fas fa-edit me-2"></i> Edit
+                                        </a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger" href="#" onclick="deletePackagingList('${list.id}')">
+                                            <i class="fas fa-trash me-2"></i> Delete
+                                        </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+            
+            // Initialize Bootstrap dropdowns
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                return new bootstrap.Dropdown(dropdownToggleEl)
+            });
+        }
+
+        // Render pagination controls
+        function renderPagination(currentPage, totalPages) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            let paginationHTML = `
+                <ul class="pagination justify-content-center">
+                    <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${currentPage - 1})" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+            `;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+            
+            paginationHTML += `
+                    <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${currentPage + 1})" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            `;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        // Render empty state when no data is available
+        function renderEmptyState() {
+            const tbody = document.getElementById('packagingListsTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No packaging lists found</h3>
+                        <p>Create a new packaging list to get started.</p>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Change page
+        function changePage(page) {
+            currentPage = page;
+            loadPackagingLists(page);
+        }
+
+        // View packaging list
+        function viewPackagingList(id) {
+            window.location.href = `../../packinglistview/packing-list-view.html?id=${id}`;
+        }
+
+        // Edit packaging list
+        function editPackagingList(id) {
+            // Use the same href as the Create New button but with ID parameter
+            window.location.href = `../PackingListCreation/packingcreation.html?id=${id}`;
+        }
+
+        // Delete packaging list
+        async function deletePackagingList(id) {
+            if (!confirm('Are you sure you want to delete this packaging list? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                showToast('Deleting packaging list...', 'info');
+                
+                const response = await fetch(`/api/packaging-list/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) throw new Error('Failed to delete packaging list');
+                
+                showToast('Packaging list deleted successfully', 'success');
+                
+                // Reload the current page
+                loadPackagingLists(currentPage);
+            } catch (error) {
+                console.error('Error deleting packaging list:', error);
+                showToast('Error deleting packaging list', 'error');
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toastContainer = document.querySelector('.toast-container');
+            const toastId = 'toast-' + Date.now();
+            
+            const toastHTML = `
+                <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+            
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement, {
+                autohide: true,
+                delay: 3000
+            });
+            
+            toast.show();
+            
+            // Remove toast element after it's hidden
+            toastElement.addEventListener('hidden.bs.toast', function () {
+                toastElement.remove();
+            });
+        }
+
+        // Initialize page
+        $(document).ready(function() {
+            loadPackagingLists(currentPage);
+        });
+    </script>
+</body>
+</html>

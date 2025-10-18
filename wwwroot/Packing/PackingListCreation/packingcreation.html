@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packing List Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./PackingListCreation.css" >
+</head>
+<body>
+    <div class="container">
+        <div class="page-header" style="display: flex;justify-content: space-between;">
+            <h1><i class="fas fa-id-card me-2"></i> <span id="pageTitle">Create Packing List</span></h1>
+            <span id="openModalTemplate"><i class="fa-solid fa-gear"></i> <span  style="cursor: pointer;">Packing template Settings</span></span>
+        </div>
+
+        <!-- Main Form Section -->
+        <div class="section">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Company</label>
+                    <select id="company">
+                        <option value="Aman graphics">Aman graphics</option>
+                        <option value="company2">Company 2</option>
+                        <option value="company3">Company 3</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Buyer</label>
+                    <select id="buyer">
+                        <option value="Next source ltd">Next source ltd</option>
+                        <option value="buyer2">Buyer 2</option>
+                        <option value="buyer3">Buyer 3</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Style</label>
+                    <select id="style">
+                        <option value="">Select</option>
+                        <option value="style1">Style 1</option>
+                        <option value="style2">Style 2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Purchase Order (PO)</label>
+                    <select id="po">
+                        <option value="">Select</option>
+                        <option value="PO-001">PO-001</option>
+                        <option value="PO-002">PO-002</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Style-(Buyer)</label>
+                    <select id="styleBuyer">
+                        <option value="">Select</option>
+                        <option value="Style-Buyer 1">Style-Buyer 1</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Shipped By</label>
+                    <select id="shippedBy">
+                        <option value="">Select</option>
+                        <option value="sea">Sea</option>
+                        <option value="air">Air</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Short Description</label>
+                    <select id="shortDesc">
+                        <option value="">Select</option>
+                        <option value="Description 1">Description 1</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Size</label>
+                    <input type="text" id="size">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Color</label>
+                    <input disabled="true" type="text" id="color" value="Auto come" style="background-color: rgba(215, 217, 219, 0.302);">
+                </div>
+                <div class="form-group">
+                    <label>Brand</label>
+                    <select id="brand">
+                        <option value="">Select</option>
+                        <option value="Brand 1">Brand 1</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Packing</label>
+                    <input type="text" id="packing">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Pcs Per Set</label>
+                    <input disabled="true" type="text" id="pcsPerSet" value="Auto come" style="background-color: rgba(215, 217, 219, 0.302);">
+                </div>
+                <div class="form-group">
+                    <label>Product No</label>
+                    <input type="text" id="productNo">
+                </div>
+                <div class="form-group">
+                    <label>Country Of Origin</label>
+                    <input type="text" id="countryOrigin">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Port Of Loading</label>
+                    <input type="text" id="portLoading">
+                </div>
+                <div class="form-group">
+                    <label>Country Of Destination</label>
+                    <input type="text" id="countryDestination">
+                </div>
+                <div class="form-group">
+                    <label>Port Of Discharge</label>
+                    <input type="text" id="portDischarge">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Incoterm</label>
+                    <input type="text" id="incoterm">
+                </div>
+                <div class="form-group">
+                    <label>ORMS No</label>
+                    <input type="text" id="ormsNo">
+                </div>
+                <div class="form-group">
+                    <label>LMKG No/ NFL PO No</label>
+                    <input type="text" id="lmkgNo">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>ORMS Style No</label>
+                    <input type="text" id="ormsStyleNo">
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="status">
+                        <option value="draft">Draft</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="reviewed">Reviewed</option>
+                        <option value="locked">Locked</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buyer Specific Fields -->
+        <div class="section">
+            <div class="section-title">
+                Buyer Specific Fields
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Item No</label>
+                    <input type="text" id="itemNo">
+                </div>
+                <div class="form-group">
+                    <label>POD</label>
+                    <input type="text" id="pod">
+                </div>
+                <div class="form-group">
+                    <label>BOI</label>
+                    <input type="text" id="boi">
+                </div>
+                <div class="form-group">
+                    <label>WWWk</label>
+                    <input type="text" id="wwwk">
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>No Of Color</label>
+                    <input type="text" id="noOfColor">
+                </div>
+                <div class="form-group">
+                    <label>KeyCode</label>
+                    <input type="text" id="keyCode">
+                </div>
+                <div class="form-group">
+                    <label>Supplier Code</label>
+                    <input type="text" id="supplierCode">
+                </div>
+            </div>
+        </div>
+
+        <!-- Packing Details -->
+        <div class="section">
+            <div class="section-title teal">
+                Packing Details
+            </div>
+            <div class="table-container">
+                <table id="packingTable">
+                    <thead>
+                        <tr>
+                            <th>SL</th>
+                            <th>No Of Carton</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Size Name</th>
+                            <th>Ratio</th>
+                            <th>ARTICLE NO.</th>
+                            <th>Pcs/Pack</th>
+                            <th>Pac/Carton</th>
+                            <th>Order Qty Pcs</th>
+                            <th>Total Pcs/Size</th>
+                            <th>Total Pacs</th>
+                            <th>G.Wt(kg)</th>
+                            <th>N.Wt(kg)</th>
+                            <th>Total.Wt(kg)</th>
+                            <th>L</th>
+                            <th>W</th>
+                            <th>H</th>
+                            <th>CBM</th>
+                        </tr>
+                    </thead>
+                    <tbody id="packingTableBody">
+                        <tr>
+                            <td>1</td>
+                            <td><input type="text" class="noOfCarton"></td>
+                            <td><input type="text" class="start"></td>
+                            <td><input type="text" class="end"></td>
+                            <td><input type="text" class="sizeName"></td>
+                            <td><input type="text" class="ratio"></td>
+                            <td><input type="text" class="articleNo"></td>
+                            <td><input type="text" class="pcsPack"></td>
+                            <td><input type="text" class="pacCarton"></td>
+                            <td><input type="text" class="orderQty"></td>
+                            <td><input type="text" class="totalPcs"></td>
+                            <td><input type="text" class="totalPacs"></td>
+                            <td><input type="text" class="gWt"></td>
+                            <td><input type="text" class="nWt"></td>
+                            <td><input type="text" class="totalWt"></td>
+                            <td><input type="text" class="l"></td>
+                            <td><input type="text" class="w"></td>
+                            <td><input type="text" class="h"></td>
+                            <td><input type="text" class="cbm"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="btn-container">
+                <button class="btn btn-add" onclick="addPackingRow()">
+                    <i class="fas fa-plus"></i> Add Row ( + )
+                </button>
+                <button class="btn btn-remove" onclick="removePackingRow()">
+                    <i class="fas fa-minus"></i> Remove Row ( - )
+                </button>
+            </div>
+
+            <div class="form-grid" style="margin-top: 20px;">
+                <div class="form-group">
+                    <label>Cartons</label>
+                    <select id="cartons">
+                        <option value="">Select</option>
+                        <option value="c1">Carton Type 1</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Order Qty Pac</label>
+                    <select id="orderQtyPac">
+                        <option value="">Select</option>
+                        <option value="q1">Quantity 1</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Order Qty Pcs</label>
+                    <input type="text" id="orderQtyPcs">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Ship Qty Pac</label>
+                    <select id="shipQtyPac">
+                        <option value="">Select</option>
+                        <option value="sq1">Ship Qty 1</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ship Qty Pcs</label>
+                    <select id="shipQtyPcs">
+                        <option value="">Select</option>
+                        <option value="sq1">Ship Qty 1</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Destination</label>
+                    <select id="destination">
+                        <option value="">Select</option>
+                        <option value="d1">Destination 1</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="section">
+            <div class="section-title orange">
+                Summary
+            </div>
+            <div class="table-container">
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>SL</th>
+                            <th>Size Name</th>
+                            <th>Order Qty</th>
+                            <th>Actual Shipment Qty</th>
+                            <th>Var( +/- )</th>
+                            <th>Percentage %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summaryTableBody">
+                        <tr>
+                            <td>1</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Packing Declaration -->
+        <div class="section">
+            <div class="section-title teal">
+                Packing Declaration
+                <i class="fas fa-cog settings-icon" id="openModalPackingDecSettings" ><span style="font-family: 'Times New Roman', Times, serif; font-style: normal;">Declaration Settings</span> </i>
+            </div>
+            <div id="declarationContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-save" onclick="saveForm()">
+                <i class="fas fa-save"></i> <span id="saveButtonText">SAVE</span>
+            </button>
+            <button class="btn btn-cancel" onclick="cancelForm()">
+                <i class="fas fa-times"></i> CANCEL
+            </button>
+        </div>
+    </div>
+
+    <div id="pageModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModalPackingDec">&times;</button>
+            <iframe id="pageFrame"></iframe>
+        </div> 
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="./packingListCreation.js"></script>
+  
+</body>
+</html>

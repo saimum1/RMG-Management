@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packing Lists</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./packing-list-view.css">
+ 
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-clipboard-list"></i> Packing List View</h1>
+            <div class="header-actions">
+              <a href="../Packing/PackiListpage/packingList.html"> <button class="btn btn-outline-secondary" >
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+               </a> 
+                <div class="btn-group">
+                    <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="downloadExcel(); return false;">
+                            <i class="fas fa-file-excel"></i> Download as Excel
+                        </a></li>
+                        <li><a class="dropdown-item" href="#" onclick="downloadPDF(); return false;">
+                            <i class="fas fa-file-pdf"></i> Download as PDF
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <i class="fas fa-table"></i> Excel View
+            </div>
+            <div class="excel-grid-container" id="excelGridContainer">
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Loading data...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden table for maintaining compatibility with existing JS -->
+    <table id="packingDetailsTable">
+        <thead>
+            <tr id="tableHeaders"></tr>
+        </thead>
+        <tbody id="packingDetailsTableBody"></tbody>
+    </table>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- XLSX Library for Excel operations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- jspdf-autotable for table formatting in PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="./packing-list-view.js"></script>
+    
+  
+</body>
+</html>

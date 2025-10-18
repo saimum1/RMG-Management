@@ -1,0 +1,331 @@
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #2c3e50;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            padding: 15px 20px;
+            font-weight: 600;
+            color: #495057;
+            font-size: 16px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 6px;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #4dabf7;
+            box-shadow: 0 0 0 0.2rem rgba(77, 171, 247, 0.25);
+        }
+
+        .form-control:disabled {
+            background-color: #f8f9fa;
+            opacity: 0.7;
+        }
+
+        .btn {
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #4dabf7;
+            border-color: #4dabf7;
+        }
+
+        .btn-primary:hover {
+            background-color: #339af0;
+            border-color: #339af0;
+        }
+
+        .btn-success {
+            background-color: #51cf66;
+            border-color: #51cf66;
+        }
+
+        .btn-success:hover {
+            background-color: #40c057;
+            border-color: #40c057;
+        }
+
+        .btn-warning {
+            background-color: #ffd43b;
+            border-color: #ffd43b;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background-color: #fcc419;
+            border-color: #fcc419;
+            color: #212529;
+        }
+
+        .btn-danger {
+            background-color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+
+        .btn-danger:hover {
+            background-color: #fa5252;
+            border-color: #fa5252;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .table {
+            font-size: 14px;
+        }
+
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+        }
+
+        .form-floating label {
+            color: #6c757d;
+        }
+
+        .form-floating .form-control:focus ~ label {
+            color: #4dabf7;
+        }
+
+        .dropdown-item {
+            font-size: 14px;
+        }
+
+        .dropdown-item i {
+            margin-right: 8px;
+        }
+
+        /* Loader Styles */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .loader-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .loader-container {
+            text-align: center;
+        }
+        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #4dabf7;
+        }
+        
+        .loader-text {
+            margin-top: 15px;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        /* Truck Icon Button Styles */
+        .truck-icon-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .truck-icon-btn:hover {
+            color: #4dabf7;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        /* Truck List Table Styles */
+        .truck-list-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .truck-list-table {
+            font-size: 14px;
+        }
+
+        .truck-list-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .truck-input {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 6px 8px;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .truck-input:focus {
+            outline: none;
+            border-color: #4dabf7;
+            box-shadow: 0 0 0 0.2rem rgba(77, 171, 247, 0.25);
+        }
+
+        .truck-input:disabled {
+            background-color: #f8f9fa;
+            opacity: 0.7;
+        }
+
+        .remove-truck-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .remove-truck-btn:hover {
+            color: #c82333;
+        }
+
+        .edit-truck-btn {
+            background: none;
+            border: none;
+            color: #4dabf7;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 5px;
+        }
+
+        .edit-truck-btn:hover {
+            color: #339af0;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+        }
+
+        .existing-truck-row {
+            background-color: #f8f9fa;
+        }
+
+        .existing-truck-row .truck-input {
+            background-color: #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 15px;
+            }
+            
+            .page-header h1 {
+                font-size: 20px;
+            }
+            
+            .card-body {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+            }
+            
+            .truck-list-container {
+                max-height: 300px;
+            }
+        }

@@ -1,0 +1,137 @@
+CREATE TABLE DeclarationSettings (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+    CompanyName NVARCHAR(255) NOT NULL,
+    QuestionsJson NVARCHAR(MAX) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    UpdatedAt DATETIME2 NULL
+);
+
+
+
+CREATE TABLE PackagingLists (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+    Company NVARCHAR(100) NOT NULL,
+    Buyer NVARCHAR(100) NOT NULL,
+    Style NVARCHAR(50) NULL,
+    PurchaseOrder NVARCHAR(50) NULL,
+    StyleBuyer NVARCHAR(50) NULL,
+    ShippedBy NVARCHAR(50) NULL,
+    ShortDescription NVARCHAR(100) NULL,
+    Size NVARCHAR(50) NULL,
+    Color NVARCHAR(50) NULL,
+    Brand NVARCHAR(50) NULL,
+    Packing NVARCHAR(100) NULL,
+    PcsPerSet NVARCHAR(50) NULL,
+    ProductNo NVARCHAR(50) NULL,
+    CountryOfOrigin NVARCHAR(50) NULL,
+    PortOfLoading NVARCHAR(50) NULL,
+    CountryOfDestination NVARCHAR(50) NULL,
+    PortOfDischarge NVARCHAR(50) NULL,
+    Incoterm NVARCHAR(50) NULL,
+    OrmsNo NVARCHAR(50) NULL,
+    LmkgNo NVARCHAR(50) NULL,
+    OrmsStyleNo NVARCHAR(50) NULL,
+    Status NVARCHAR(20) NULL DEFAULT 'draft',
+    ItemNo NVARCHAR(50) NULL,
+    Pod NVARCHAR(50) NULL,
+    Boi NVARCHAR(50) NULL,
+    Wwwk NVARCHAR(50) NULL,
+    NoOfColor NVARCHAR(50) NULL,
+    KeyCode NVARCHAR(50) NULL,
+    SupplierCode NVARCHAR(50) NULL,
+    Cartons NVARCHAR(50) NULL,
+    OrderQtyPac NVARCHAR(50) NULL,
+    OrderQtyPcs NVARCHAR(50) NULL,
+    ShipQtyPac NVARCHAR(50) NULL,
+    ShipQtyPcs NVARCHAR(50) NULL,
+    Destination NVARCHAR(50) NULL,
+    PackingDetailsJson NVARCHAR(MAX) NOT NULL,
+    DeclarationAnswersJson NVARCHAR(MAX) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    UpdatedAt DATETIME2 NULL
+);
+
+
+
+
+
+CREATE TABLE Templates (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    Name NVARCHAR(100) NOT NULL,
+    FileContent VARBINARY(MAX) NOT NULL,
+    FileName NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL DEFAULT 0,
+    CreatedAt DATETIME NOT NULL DEFAULT GETUTCDATE(),
+    UpdatedAt DATETIME NULL
+);
+
+-- Create TemplateMappings table
+CREATE TABLE TemplateMappings (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    TemplateId UNIQUEIDENTIFIER NOT NULL,
+    ExcelColumn NVARCHAR(100) NOT NULL,
+    DatabaseField NVARCHAR(100) NOT NULL,
+    IsRecurring BIT NOT NULL DEFAULT 0,
+    CONSTRAINT FK_TemplateMappings_Templates 
+        FOREIGN KEY (TemplateId) REFERENCES Templates(Id)
+        ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE Trucks (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    TruckNumber NVARCHAR(50) NOT NULL,
+    TruckLicense NVARCHAR(50) NOT NULL,
+    TransportCompanyName NVARCHAR(100) NOT NULL,
+    DriverName NVARCHAR(100) NOT NULL,
+    DriverLicense NVARCHAR(50) NOT NULL,
+    DriverPhone NVARCHAR(20) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    UpdatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE()
+);
+
+
+
+CREATE TABLE DeliveryChallanHeaderCreation (
+    Id UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+    ChallanNo NVARCHAR(50) NOT NULL,
+    ExistingTruckNo NVARCHAR(50) NULL,
+    HireTruckNo NVARCHAR(50) NULL,
+    InDate DATETIME2 NOT NULL,
+    InTime NVARCHAR(8) NOT NULL,
+    [To] NVARCHAR(100) NOT NULL,
+    DriverName NVARCHAR(100) NOT NULL,
+    OutDate NVARCHAR(50) NULL,
+    OutTime NVARCHAR(8) NULL,
+    Address NVARCHAR(200) NOT NULL,
+    LicenseNo NVARCHAR(50) NOT NULL,
+    TruckCBM NVARCHAR(50) NOT NULL,
+    DepotName NVARCHAR(100) NOT NULL,
+    MobileNo NVARCHAR(20) NOT NULL,
+    TransportCompany NVARCHAR(100) NOT NULL,
+    LockNo NVARCHAR(50) NULL,
+    RentedAmount NVARCHAR(50) NULL,
+    agdl NVARCHAR(MAX) NULL,
+    descriptions NVARCHAR(MAX) NULL,
+    remarks NVARCHAR(MAX) NULL,
+    quantity NVARCHAR(MAX) NULL,
+    unit NVARCHAR(MAX) NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME()
+);
+
+
+CREATE TABLE [GatepassHeaders] (
+    [Id] UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    [GatePassNo] NVARCHAR(50) NOT NULL,
+    [Date] DATETIME2 NOT NULL,
+    [CompanyName] NVARCHAR(100) NOT NULL,
+    [Address] NVARCHAR(200) NOT NULL,
+    [IssuedTo] NVARCHAR(100) NOT NULL,
+    [TruckNo] NVARCHAR(50) NULL,
+    [DriverName] NVARCHAR(100) NULL,
+    [TransportCompany] NVARCHAR(100) NULL,
+    [DriverPhone] NVARCHAR(20) NULL,
+    [DriverLicense] NVARCHAR(50) NULL,
+    [Remarks] NVARCHAR(500) NULL
+);

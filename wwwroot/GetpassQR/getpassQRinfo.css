@@ -1,0 +1,41 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    background-color: #f4f4f4;
+}
+
+.card {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    font-size: 14px;
+}
+
+#detailsTable tbody tr {
+    background-color: transparent !important; /* No background color for table rows */
+}
+
+
+#qrCode {
+    max-width: 200px;
+    margin-top: 20px;
+}
+
+#gatepassHeaderContent h5 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+#gatepassHeaderContent p {
+    margin-bottom: 0.25rem;
+}
+
+@media (max-width: 576px) {
+    .card, .table, #gatepassHeaderContent h5, #gatepassHeaderContent p {
+        font-size: 12px;
+    }
+    #qrCode {
+        max-width: 150px;
+    }
+}

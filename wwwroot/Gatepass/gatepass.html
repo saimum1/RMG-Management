@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gatepass Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./gatepass.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+</head>
+<body>
+    <!-- Loader Overlay -->
+    <div class="loader-overlay" id="loaderOverlay">
+        <div class="loader-container">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="loader-text" id="loaderText">Processing...</div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1><i class="fas fa-id-card me-2"></i>Gatepass Management</h1>
+        </div>
+
+        <!-- Create New Gatepass Section -->
+        <div class="card collapse-section" id="createGatepassSection">
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#createGatepassBody">
+                <div>
+                    <i class="fas fa-plus-circle me-2"></i>Create New Gatepass
+                </div>
+                <i class="fas fa-chevron-down collapse-icon"></i>
+            </div>
+            <div class="card-body collapse show" id="createGatepassBody">
+                <form id="gatepassForm">
+                    <input type="hidden" id="gatepassId" value="">
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="gatePassNo" value="" disabled>
+                                <label for="gatePassNo">Gate Pass No.</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="date" value="2025-10-07" required>
+                                <label for="date">Date</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="companyName" value="ABC Company" required>
+                                <label for="companyName">Company Name</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="address" value="123 Business Street, City" required>
+                                <label for="address">Address</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="issuedTo" value="John Smith" required>
+                                <label for="issuedTo">Issued To</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" id="truckNo">
+                                    <option value="">Select truck</option>
+                                    <!-- Trucks will be loaded from database here -->
+                                </select>
+                                <label for="truckNo">Truck No.</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="driverName" value="John Doe" required>
+                                <label for="driverName">Driver Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="transportCompany" disabled value="" required>
+                                <label for="transportCompany">Transport Company Name</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="driverPhone" value="9876543210" required>
+                                <label for="driverPhone">Driver Phone</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="driverLicense" value="DL12345678" required>
+                                <label for="driverLicense">Driver License</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <textarea class="form-control" id="remarks" style="height: 100px">Delivery of goods</textarea>
+                                <label for="remarks">Remarks</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="button" class="btn btn-primary" id="submitGatepassBtn">
+                            <i class="fas fa-save me-2"></i>Submit Gatepass
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delivery Challans Section -->
+        <div class="card collapse-section" id="challansSection">
+            <div class="card-header collapsed" data-bs-toggle="collapse" data-bs-target="#challansBody">
+                <div>
+                    <i class="fas fa-list me-2"></i>Delivery Challans for Selected Truck
+                </div>
+                <i class="fas fa-chevron-down collapse-icon"></i>
+            </div>
+            <div class="card-body collapse" id="challansBody">
+                <div id="challansList" class="mb-3">
+                    <p class="text-muted">Select a truck to view associated delivery challans</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Existing Gatepasses Section -->
+        <div class="card collapse-section" id="gatepassesSection">
+            <div class="card-header collapsed" data-bs-toggle="collapse" data-bs-target="#gatepassesBody">
+                <div>
+                    <i class="fas fa-list me-2"></i>Existing Gatepasses
+                </div>
+                <i class="fas fa-chevron-down collapse-icon"></i>
+            </div>
+            <div class="card-body collapse" id="gatepassesBody">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="gatepassesTable">
+                        <thead>
+                            <tr>
+                                <th>Gate Pass No.</th>
+                                <th>Date</th>
+                                <th>Company Name</th>
+                                <th>Issued To</th>
+                                <th>Truck No.</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Modal for Confirmations -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="confirmationModalBody">
+                    Are you sure you want to proceed?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Gatepass Modal -->
+    <div class="modal fade" id="viewGatepassModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header modal-header-enhanced">
+                    <h5 class="modal-title">
+                        <i class="fas fa-id-card me-2"></i>Gatepass Details
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body position-relative" id="gatepassViewContent">
+                  
+                </div>
+                
+               
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="./gatepass.js" ></script>
+ 
+   
+
+</body>
+</html>

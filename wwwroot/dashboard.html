@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+        }
+
+        .welcome-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .welcome-subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .stats-container {
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 100%;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .stat-icon.blue {
+            color: #007bff;
+        }
+
+        .stat-icon.green {
+            color: #28a745;
+        }
+
+        .stat-icon.orange {
+            color: #ffc107;
+        }
+
+        .stat-icon.red {
+            color: #dc3545;
+        }
+
+        .stat-icon.purple {
+            color: #6f42c1;
+        }
+
+        .stat-icon.teal {
+            color: #17a2b8;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            height: 100%;
+            border: 1px solid #e0e0e0;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            color: #555;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            color: #007bff;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: #333;
+            margin: 0;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #007bff;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            text-align: center;
+            color: #dc3545;
+            padding: 20px;
+            display: none;
+        }
+
+        .recent-activity {
+            margin-top: 2rem;
+        }
+
+        .activity-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #007bff;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .feature-card {
+                margin-bottom: 30px;
+            }
+            
+            .stat-card {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-list-alt me-2"></i> Packing List Management
+            </a>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-1"></i> <span id="usernameDisplay">User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <!-- Welcome Section -->
+        <div class="welcome-card">
+            <h1 class="welcome-title">Welcome back, <span id="welcomeUsername">User</span>!</h1>
+            <p class="welcome-subtitle">Manage your packing lists efficiently and effectively.</p>
+        </div>
+        
+        <!-- Statistics Section -->
+        <div class="stats-container">
+            <div class="error-message" id="statsError">
+                <i class="fas fa-exclamation-triangle me-2"></i>Failed to load statistics. Please try again later.
+            </div>
+            
+            <div class="loading" id="statsLoading">
+                <div class="spinner"></div>
+            </div>
+            
+            <div class="row g-3" id="statsContainer" style="display: none;">
+                <div class="col-md-2 col-sm-4 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-list-alt"></i>
+                        </div>
+                        <div class="stat-number" id="totalCount">0</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-number" id="approvedCount">0</div>
+                        <div class="stat-label">Approved</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-number" id="pendingCount">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <div class="stat-number" id="draftCount">0</div>
+                        <div class="stat-label">Draft</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="stat-number" id="reviewedCount">0</div>
+                        <div class="stat-label">Reviewed</div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-4 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon teal">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="stat-number" id="lockedCount">0</div>
+                        <div class="stat-label">Locked</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feature Cards Section -->
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="./Packing/PackiListpage/packingList.html" target="_blank" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <h3 class="feature-title">Packing List</h3>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a href="./ChallanDeliveryCreatoin/CreateChallan.html" target="_blank" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <h3 class="feature-title">Create Challan</h3>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <a href="./Gatepass/gatepass.html" target="_blank" class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <h3 class="feature-title">Generate Gate Pass</h3>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Recent Activity Section -->
+        <div class="recent-activity">
+            <h3 class="mb-3">Recent Packing Lists</h3>
+            <div class="error-message" id="activityError">
+                <i class="fas fa-exclamation-triangle me-2"></i>Failed to load recent activity. Please try again later.
+            </div>
+            
+            <div class="loading" id="activityLoading">
+                <div class="spinner"></div>
+            </div>
+            
+            <div id="activityContainer" style="display: none;">
+                <!-- Activity items will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Check if user is logged in
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                window.location.href = './index.html'; 
+                return;
+            }
+
+            // Check if login has expired
+            const expiration = localStorage.getItem('loginExpiration');
+            if (expiration && new Date() > new Date(expiration)) {
+                logout();
+                return;
+            }
+
+            // Display username
+            const username = localStorage.getItem('username') || 'User';
+            $('#usernameDisplay').text(username);
+            $('#welcomeUsername').text(username);
+
+            // Load dashboard data
+            loadStatistics();
+            loadRecentActivity();
+        });
+
+        function loadStatistics() {
+            $.ajax({
+                url: '/api/packaging-list',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success && response.data) {
+                        const packingLists = response.data;
+                        
+                        // Calculate statistics for all status types
+                        const totalCount = packingLists.length;
+                        const approvedCount = packingLists.filter(list => list.status === 'approved').length;
+                        const pendingCount = packingLists.filter(list => list.status === 'pending').length;
+                        const draftCount = packingLists.filter(list => list.status === 'draft').length;
+                        const reviewedCount = packingLists.filter(list => list.status === 'reviewed').length;
+                        const lockedCount = packingLists.filter(list => list.status === 'locked').length;
+                        
+                        // Update UI
+                        $('#totalCount').text(totalCount);
+                        $('#approvedCount').text(approvedCount);
+                        $('#pendingCount').text(pendingCount);
+                        $('#draftCount').text(draftCount);
+                        $('#reviewedCount').text(reviewedCount);
+                        $('#lockedCount').text(lockedCount);
+                        
+                        // Show stats container
+                        $('#statsLoading').hide();
+                        $('#statsContainer').show();
+                    } else {
+                        $('#statsLoading').hide();
+                        $('#statsError').show();
+                    }
+                },
+                error: function() {
+                    $('#statsLoading').hide();
+                    $('#statsError').show();
+                }
+            });
+        }
+
+        function loadRecentActivity() {
+            $.ajax({
+                url: '/api/packaging-list',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success && response.data) {
+                        const packingLists = response.data;
+                        
+                        // Sort by created date (newest first) and take the first 5
+                        const recentLists = packingLists
+                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                            .slice(0, 5);
+                        
+                        // Generate HTML for recent activity
+                        let activityHtml = '';
+                        
+                        if (recentLists.length === 0) {
+                            activityHtml = '<div class="text-center text-muted py-4">No recent activity</div>';
+                        } else {
+                            recentLists.forEach(list => {
+                                const createdDate = new Date(list.createdAt).toLocaleDateString();
+                                const statusClass = getStatusClass(list.status);
+                                
+                                activityHtml += `
+                                    <div class="activity-item">
+                                        <div class="activity-icon">
+                                            <i class="fas fa-boxes-stacked"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">
+                                                ${list.company} - ${list.buyer}
+                                                <span class="badge ${statusClass} ms-2">${list.status}</span>
+                                            </div>
+                                            <div class="activity-time">${createdDate}</div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        }
+                        
+                        $('#activityContainer').html(activityHtml);
+                        $('#activityLoading').hide();
+                        $('#activityContainer').show();
+                    } else {
+                        $('#activityLoading').hide();
+                        $('#activityError').show();
+                    }
+                },
+                error: function() {
+                    $('#activityLoading').hide();
+                    $('#activityError').show();
+                }
+            });
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'approved':
+                    return 'bg-success';
+                case 'pending':
+                    return 'bg-warning';
+                case 'draft':
+                    return 'bg-secondary';
+                case 'reviewed':
+                    return 'bg-info';
+                case 'locked':
+                    return 'bg-dark';
+                default:
+                    return 'bg-primary';
+            }
+        }
+
+        function logout() {
+            // Clear login data
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('loginExpiration');
+            
+            // Redirect to login page
+            window.location.href = 'index.html';
+        }
+    </script>
+</body> 
+</html> 
