@@ -285,20 +285,3 @@ dotnet run --environment Development
 ```bash
 dotnet test
 ```
-
-### Publish for Production
-```bash
-dotnet publish -c Release -o ./publish
-```
-
-## 📝 License
-
-This project is licensed under the MIT License.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
-
-**Built with .NET 8.0 and Entity Framework Core**
